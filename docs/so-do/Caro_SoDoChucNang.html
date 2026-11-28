@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sơ đồ chức năng chi tiết - Game Caro Multiplayer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background-color: #eaf0f6;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            color: #1e293b;
+        }
+        /* Thanh cuộn ngang mềm mại */
+        ::-webkit-scrollbar {
+            height: 10px;
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #e2e8f0;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #94a3b8;
+            border-radius: 5px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
+        }
+    </style>
+</head>
+<body class="p-3 h-screen flex flex-col select-none">
+
+    <!-- Giả lập thanh tiêu đề cửa sổ ứng dụng giống mẫu -->
+    <div class="bg-[#1b4965] text-white flex items-center px-4 py-2 rounded-t-lg shadow text-xs md:text-sm">
+        <div class="flex items-center gap-3">
+            <span class="opacity-75">Học phần: Lập trình mạng</span>
+            <span class="opacity-40">|</span>
+            <span class="opacity-75">Đề tài: Game Caro Multiplayer</span>
+            <span class="opacity-40">|</span>
+            <span class="bg-white/20 px-2.5 py-0.5 rounded font-semibold text-amber-200">Sơ đồ chức năng theo vai trò & Luồng vào/ra</span>
+        </div>
+    </div>
+    
+    <!-- Thanh đường dẫn giả lập -->
+    <div class="bg-white px-4 py-1.5 flex items-center border-b border-gray-200 text-xs text-gray-600 shadow-sm">
+        <span class="mr-2 text-blue-600 font-bold">⟳</span>
+        <span class="bg-gray-50 px-3 py-1 rounded w-full border border-gray-200 font-mono text-[11px] text-gray-500">
+        </span>
+    </div>
+
+    <!-- Khung cuộn ngang chứa toàn bộ 4 cột chức năng chính -->
+    <div class="flex-1 flex overflow-x-auto gap-4 pt-3 pb-6 items-start">
+
+        <!-- ==================== CỘT 1: KHÁCH TRUY CẬP ==================== -->
+        <div class="bg-[#fcfaf9] border border-gray-300 rounded-xl shadow-sm min-w-[340px] max-w-[340px] p-3.5 shrink-0 flex flex-col max-h-full overflow-y-auto">
+            <div class="mb-3 border-b pb-2">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-[#c0392b] font-bold text-base uppercase tracking-wide">Khách truy cập</h2>
+                    <span class="bg-red-100 text-[#c0392b] text-[11px] font-bold px-2 py-0.5 rounded-full">Màn hình 1</span>
+                </div>
+                <p class="text-[11px] text-gray-500 mt-0.5">1 nhóm chức năng · 5 thao tác cơ bản</p>
+            </div>
+
+            <!-- Nhóm N01 -->
+            <div class="mb-2 flex items-center text-gray-700 font-bold text-xs uppercase">
+                <span class="mr-1.5 text-red-600 text-[10px]">▼</span> Tham gia & Chơi với máy
+                <span class="ml-auto text-[10px] bg-gray-200 text-gray-700 px-1.5 py-0.5 rounded font-mono">N01</span>
+            </div>
+
+            <div class="border-l-2 border-red-300 pl-2.5 ml-1 space-y-3">
+                <!-- N01.1 -->
+                <div class="bg-white p-2.5 rounded-lg border border-gray-200 hover:border-red-300 shadow-sm transition-all">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-xs font-bold text-[#6a1b9a]">N01.1 Nhập tên & Tạo phiên</h3>
+                        <span class="text-[10px] text-gray-400 font-mono">P1.1</span>
+                    </div>
+                    <div class="mt-1 text-[11px] text-gray-700 leading-snug">
+                        <span class="font-bold text-[#0984e3]">Đầu vào:</span> Tên hiển thị (<code class="bg-gray-100 px-1 rounded text-red-500">ten_hien_thi</code>).
+                    </div>
+                    <div class="mt-1 text-[11px] text-gray-700 leading-snug">
+                        <span class="font-bold text-[#00b894]">Đầu ra:</span> Cấp mã phiên <code class="bg-gray-100 px-1 rounded text-green-600">ma_nguoi_choi</code>, liên kết <code class="bg-gray-100 px-1 rounded">ma_ket_noi</code>, trả khóa phiên <code class="bg-gray-100 px-1 rounded">khoa_phien</code> lưu tại máy khách (dùng cho N01.5), chuyển vào Sảnh.
+                    </div>
+                    <div class="mt-1 text-[10.5px] text-amber-700 bg-amber-50 p-1 rounded border border-amber-200 leading-tight">
+                        <strong>Quy tắc:</strong> Bắt buộc nhập tên để máy chủ cấp <code>ma_nguoi_choi</code>; khách chưa nhập tên không có mã nên không có xếp hạng. Xếp hạng, hình phạt và lịch sử cặp đấu gắn với <code>ma_nguoi_choi</code>, không gắn với tên. Trùng tên vẫn cấp 2 mã khác nhau; tên rỗng/quá dài trả lỗi tại máy khách. Người chơi mới bắt đầu ở cấp độ 1 (0 điểm kinh nghiệm), hạng E.
+                    </div>
+                </div>
+
+                <!-- N01.2 -->
+                <div class="bg-white p-2.5 rounded-lg border border-gray-200 hover:border-red-300 shadow-sm transition-all">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-xs font-bold text-[#6a1b9a]">N01.2 Xem trạng thái kết nối</h3>
+                        <span class="text-[10px] text-gray-400 font-mono">P1.2</span>
+                    </div>
+                    <div class="mt-1 text-[11px] text-gray-700 leading-snug">
+                        <span class="font-bold text-[#0984e3]">Đầu vào:</span> Sự kiện kết nối giữa máy khách và máy chủ.
+                    </div>
+                    <div class="mt-1 text-[11px] text-gray-700 leading-snug">
+                        <span class="font-bold text-[#00b894]">Đầu ra:</span> Nhãn/Biểu tượng trạng thái (Đã kết nối / Mất kết nối).
+                    </div>
+                </div>
+
+                <!-- N01.3 -->
+                <div class="bg-white p-2.5 rounded-lg border border-gray-200 hover:border-red-300 shadow-sm transition-all">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-xs font-bold text-[#6a1b9a]">N01.3 Xem hướng dẫn & Luật chơi</h3>
+                        <span class="text-[10px] text-gray-400 font-mono">P1.3</span>
+                    </div>
+                    <div class="mt-1 text-[11px] text-gray-700 leading-snug">
+                        <span class="font-bold text-[#0984e3]">Đầu vào:</span> Lệnh bấm "Hướng dẫn".
+                    </div>
+                    <div class="mt-1 text-[11px] text-gray-700 leading-snug">
+                        <span class="font-bold text-[#00b894]">Đầu ra:</span> Hộp thoại hiển thị quy tắc bàn cờ 19x19, thắng 5 quân không chặn, quân X đi trước.
+                    </div>
+                </div>
+
+                <div class="bg-white p-2.5 rounded-lg border border-gray-200 hover:border-red-300 shadow-sm transition-all">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-xs font-bold text-[#6a1b9a]">N01.4 Chơi với máy</h3>
+                        <span class="text-[10px] text-gray-400 font-mono">P1.4</span>
+                    </div>
+                    <div class="mt-1 text-[11px] text-gray-700 leading-snug">
+                        <span class="font-bold text-[#0984e3]">Đầu vào:</span> Lệnh bấm "Chơi với máy" (có thể chọn mức độ khó).
+                    </div>
+                    <div class="mt-1 text-[11px] text-gray-700 leading-snug">
+                        <span class="font-bold text-[#00b894]">Đầu ra:</span> Máy chủ tạo phòng riêng + <code class="bg-gray-100 px-1 rounded text-blue-600">ma_tran</code>, đối thủ máy do máy chủ điều khiển (tự động sẵn sàng), tính và gửi nước đi sau mỗi lượt của người chơi.
+                    </div>
+                    <div class="mt-1 text-[10.5px] text-amber-700 bg-amber-50 p-1 rounded border border-amber-200 leading-tight">
+                        <strong>Quy tắc:</strong> Ván với máy không vào Hàng đợi ghép trận; Nước đi của đối thủ máy do máy chủ tính, máy khách không tự quyết. Người chơi rời phòng hoặc ngắt kết nối thì ván với máy bị hủy ngay, không xử thua, không phạt.
+                    </div>
+                </div>
+
+                <div class="bg-white p-2.5 rounded-lg border border-gray-200 hover:border-red-300 shadow-sm transition-all">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-xs font-bold text-[#6a1b9a]">N01.5 Khôi phục phiên</h3>
+                        <span class="text-[10px] text-gray-400 font-mono">P1.5</span>
+                    </div>
+                    <div class="mt-1 text-[11px] text-gray-700 leading-snug">
+                        <span class="font-bold text-[#0984e3]">Đầu vào:</span> Mở lại trang/kết nối lại, máy khách gửi <code class="bg-gray-100 px-1 rounded">khoa_phien</code>.
+                    </div>
+                    <div class="mt-1 text-[11px] text-gray-700 leading-snug">
+                        <span class="font-bold text-[#00b894]">Đầu ra:</span> Máy chủ nhận diện <code class="bg-gray-100 px-1 rounded">ma_nguoi_choi</code> cũ, gắn <code class="bg-gray-100 px-1 rounded">ma_ket_noi</code> mới, trả về nơi người chơi đang ở (Sảnh / Phòng / Ván đang đấu kèm bàn cờ, <code class="bg-gray-100 px-1 rounded">thoi_gian_con_lai</code>) và hủy đếm ngược 1 phút ở N10.1.
+                    </div>
+                    <div class="mt-1 text-[10.5px] text-amber-700 bg-amber-50 p-1 rounded border border-amber-200 leading-tight">
+                        <strong>Quy tắc:</strong> Khóa phiên sai hoặc hết hạn thì phải nhập tên lại (N01.1). Quá 1 phút mà chưa khôi phục thì ván đã bị xử thua (N10.2), khi vào lại chỉ về Sảnh.
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ==================== CỘT 2: NGƯỜI CHƠI TẠI SẢNH ==================== -->
+        <div class="bg-[#fcfaf9] border border-gray-300 rounded-xl shadow-sm min-w-[340px] max-w-[340px] p-3.5 shrink-0 flex flex-col max-h-full overflow-y-auto">
+            <div class="mb-3 border-b pb-2">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-[#6a1b9a] font-bold text-base uppercase tracking-wide">Người chơi (Tại Sảnh)</h2>
+                    <span class="bg-purple-100 text-[#6a1b9a] text-[11px] font-bold px-2 py-0.5 rounded-full">Màn hình 2</span>
+                </div>
+                <p class="text-[11px] text-gray-500 mt-0.5">5 nhóm chức năng · 16 thao tác điều hướng</p>
+            </div>
+
+            <!-- Nhóm N02: Quản lý phòng -->
+            <div class="mb-2 flex items-center text-gray-700 font-bold text-xs uppercase">
+                <span class="mr-1.5 text-purple-600 text-[10px]">▼</span> Quản lý phòng
+                <span class="ml-auto text-[10px] bg-gray-200 text-gray-700 px-1.5 py-0.5 rounded font-mono">N02</span>
+            </div>
+            <div class="border-l-2 border-purple-300 pl-2.5 ml-1 space-y-3 mb-4">
+                <!-- N02.1 -->
+                <div class="bg-white p-2.5 rounded-lg border border-gray-200 hover:border-purple-300 shadow-sm transition-all">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-xs font-bold text-[#6a1b9a]">N02.1 Tạo phòng chơi</h3>
+                        <span class="text-[10px] text-gray-400 font-mono">P2.1</span>
+                    </div>
+                    <div class="mt-1 text-[11px] text-gray-700 leading-snug">
+                        <span class="font-bold text-[#0984e3]">Đầu vào:</span> Yêu cầu tạo phòng từ Sảnh.
+                    </div>
+                    <div class="mt-1 text-[11px] text-gray-700 leading-snug">
+                        <span class="font-bold text-[#00b894]">Đầu ra:</span> Mã phòng <code class="bg-gray-100 px-1 rounded text-purple-700">ma_phong</code>, gán người tạo vào danh sách phòng, chuyển giao diện sang phòng. Ván trong phòng tự tạo là ván thường, không tính xếp hạng.
+                    </div>
+                </div>
+
+                <!-- N02.2 -->
+                <div class="bg-white p-2.5 rounded-lg border border-gray-200 hover:border-purple-300 shadow-sm transition-all">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-xs font-bold text-[#6a1b9a]">N02.2 Vào phòng bằng mã</h3>
+                        <span class="text-[10px] text-gray-400 font-mono">P2.2</span>
+                    </div>
+                    <div class="mt-1 text-[11px] text-gray-700 leading-snug">
+                        <span class="font-bold text-[#0984e3]">Đầu vào:</span> Mã chuỗi <code class="bg-gray-100 px-1 rounded text-red-500">ma_phong</code>.
+                    </div>
+                    <div class="mt-1 text-[11px] text-gray-700 leading-snug">
+                        <span class="font-bold text-[#00b894]">Đầu ra:</span> Dữ liệu thành viên phòng hoặc mã lỗi chi tiết (Sai mã / Phòng đã đủ 2 người / Đang trong trận khác).
+                    </div>
+                </div>
+
+                <!-- N02.3 -->
+                <div class="bg-white p-2.5 rounded-lg border border-gray-200 hover:border-purple-300 shadow-sm transition-all">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-xs font-bold text-[#6a1b9a]">N02.3 Đổi tên hiển thị</h3>
+                        <span class="text-[10px] text-gray-400 font-mono">P2.3</span>
+                    </div>
+                    <div class="mt-1 text-[11px] text-gray-700 leading-snug">
+                        <span class="font-bold text-[#0984e3]">Đầu vào:</span> Tên mới (<code class="bg-gray-100 px-1 rounded">ten_hien_thi_moi</code>).
+                    </div>
+                    <div class="mt-1 text-[11px] text-gray-700 leading-snug">
+                        <span class="font-bold text-[#00b894]">Đầu ra:</span> Cập nhật <code class="bg-gray-100 px-1 rounded">ten_hien_thi</code> tại máy chủ và giao diện Sảnh; <code class="bg-gray-100 px-1 rounded">ma_nguoi_choi</code> giữ nguyên nên xếp hạng và hình phạt không bị đặt lại.
+                    </div>
+                    <div class="mt-1 text-[10.5px] text-amber-700 bg-amber-50 p-1 rounded border border-amber-200 leading-tight">
+                        <strong>Ràng buộc:</strong> Chỉ thực hiện khi đang ở sảnh và không trong hàng đợi tìm trận.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Nhóm N03: Ghép nhanh -->
+            <div class="mb-2 flex items-center text-gray-700 font-bold text-xs uppercase">
+                <span class="mr-1.5 text-purple-600 text-[10px]">▼</span> Đấu thường (Tìm trận nhanh)
+                <span class="ml-auto text-[10px] bg-gray-200 text-gray-700 px-1.5 py-0.5 rounded font-mono">N03</span>
+            </div>
+            <div class="border-l-2 border-purple-300 pl-2.5 ml-1 space-y-3">
+                <!-- N03.1 -->
+                <div class="bg-white p-2.5 rounded-lg border border-gray-200 hover:border-purple-300 shadow-sm transition-all">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-xs font-bold text-[#6a1b9a]">N03.1 Đấu thường (không phân biệt hạng)</h3>
+                        <span class="text-[10px] text-gray-400 font-mono">P2.8</span>
+                    </div>
+                    <div class="mt-1 text-[11px] text-gray-700 leading-snug">
+                        <span class="font-bold text-[#0984e3]">Đầu vào:</span> Lệnh bấm "Đấu thường".
+                    </div>
+                    <div class="mt-1 text-[11px] text-gray-700 leading-snug">
+                        <span class="font-bold text-[#00b894]">Đầu ra:</span> Máy chủ đẩy vào Hàng đợi chung, ghép 2 người bất kỳ theo vào trước ra trước, không xét hạng, tự sinh phòng như N03.2. Kết quả thắng/thua không cộng trừ điểm xếp hạng. Chế độ thời gian (tự do hoặc tùy chỉnh tối đa 15 phút) chọn trong phòng ở N07.3.
+                    </div>
+                    <div class="mt-1 text-[10.5px] text-amber-700 bg-amber-50 p-1 rounded border border-amber-200 leading-tight">
+                        <strong>Quy tắc:</strong> Dùng được cả khi đang bị cấm đấu xếp hạng. Hoàn thành 1 trận Đấu thường (đến khi có kết quả) sẽ gỡ yêu cầu bắt buộc sau khi rời phòng. Ván với máy không tính.
+                    </div>
+                </div>
+
+                <!-- N03.2 -->
+                <div class="bg-white p-2.5 rounded-lg border border-gray-200 hover:border-purple-300 shadow-sm transition-all">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-xs font-bold text-[#6a1b9a]">N03.2 Ghép cặp Đấu thường & Tạo phòng</h3>
+                        <span class="text-[10px] text-gray-400 font-mono">P2.5</span>
+                    </div>
+                    <div class="mt-1 text-[11px] text-gray-700 leading-snug">
+                        <span class="font-bold text-[#0984e3]">Đầu vào:</span> Có 2 phiên hợp lệ trong Hàng đợi <strong>Đấu thường</strong> (N03.1).
+                    </div>
+                    <div class="mt-1 text-[11px] text-gray-700 leading-snug">
+                        <span class="font-bold text-[#00b894]">Đầu ra:</span> Xóa 2 phiên khỏi hàng đợi, tự động sinh phòng, điều hướng cả 2 vào cùng phòng.
+                    </div>
+                    <div class="mt-1 text-[10.5px] text-amber-700 bg-amber-50 p-1 rounded border border-amber-200 leading-tight">
+                        <strong>Quy tắc:</strong> Chỉ dành cho Đấu thường: ghép 2 người bất kỳ theo vào trước ra trước, không xét hạng, không tính xếp hạng. Người vào hàng đợi trước được chọn quân X/O (N07.2).
+                    </div>
+                </div>
+
+                <!-- N03.3 -->
+                <div class="bg-white p-2.5 rounded-lg border border-gray-200 hover:border-purple-300 shadow-sm transition-all">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-xs font-bold text-[#6a1b9a]">N03.3 Hủy tìm trận (Xếp hạng / Thường)</h3>
+                        <span class="text-[10px] text-gray-400 font-mono">P2.6</span>
+                    </div>
+                    <div class="mt-1 text-[11px] text-gray-700 leading-snug">
+                        <span class="font-bold text-[#0984e3]">Đầu vào:</span> Lệnh bấm "Hủy tìm".
+                    </div>
+                    <div class="mt-1 text-[11px] text-gray-700 leading-snug">
+                        <span class="font-bold text-[#00b894]">Đầu ra:</span> Xóa phiên khỏi danh sách hàng đợi, mở khóa lại các nút chức năng tại Sảnh.
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Nhóm N04 -->
+            <div class="mb-2 mt-4 flex items-center text-gray-700 font-bold text-xs uppercase">
+                <span class="mr-1.5 text-purple-600 text-[10px]">▼</span> Đấu xếp hạng & Bảng xếp hạng
+                <span class="ml-auto text-[10px] bg-gray-200 text-gray-700 px-1.5 py-0.5 rounded font-mono">N04</span>
+            </div>
+            <div class="border-l-2 border-purple-300 pl-2.5 ml-1 space-y-3">
+                <!-- N04.1 -->
+                <div class="bg-white p-2.5 rounded-lg border border-gray-200 hover:border-purple-300 shadow-sm transition-all">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-xs font-bold text-[#6a1b9a]">N04.1 Chơi ngay (Đấu xếp hạng) - Đăng ký tìm trận</h3>
+                        <span class="text-[10px] text-gray-400 font-mono">P2.4</span>
+                    </div>
+                    <div class="mt-1 text-[11px] text-gray-700 leading-snug">
+                        <span class="font-bold text-[#0984e3]">Đầu vào:</span> Lệnh bấm "Chơi ngay".
+                    </div>
+                    <div class="mt-1 text-[11px] text-gray-700 leading-snug">
+                        <span class="font-bold text-[#00b894]">Đầu ra:</span> Máy chủ đẩy vào Hàng đợi vào trước ra trước theo từng hạng (<code class="bg-gray-100 px-1 rounded">ma_nguoi_choi, bac_xep_hang, thoi_diem_vao_hang_doi</code>); Máy khách hiển thị "Đang tìm đối thủ...", khóa nút Tạo/Vào phòng.
+                    </div>
+                    <div class="mt-1 text-[10.5px] text-amber-700 bg-amber-50 p-1 rounded border border-amber-200 leading-tight">
+                        <strong>Điều kiện:</strong> Bị khóa nút "Chơi ngay" nếu đang bị cấm đấu xếp hạng (đếm ngược 30 giây) hoặc chưa hoàn thành trận Đấu thường bắt buộc (xem N09.4).
+                    </div>
+                </div>
+
+                <!-- N04.2 -->
+                <div class="bg-white p-2.5 rounded-lg border border-gray-200 hover:border-purple-300 shadow-sm transition-all">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-xs font-bold text-[#6a1b9a]">N04.2 Ghép cặp xếp hạng & Vào trận</h3>
+                        <span class="text-[10px] text-gray-400 font-mono">P2.12</span>
+                    </div>
+                    <div class="mt-1 text-[11px] text-gray-700 leading-snug">
+                        <span class="font-bold text-[#0984e3]">Đầu vào:</span> Có 2 phiên hợp lệ trong Hàng đợi <strong>xếp hạng</strong> (N04.1), <strong>cùng bậc hoặc chênh tối đa 1 bậc</strong>.
+                    </div>
+                    <div class="mt-1 text-[11px] text-gray-700 leading-snug">
+                        <span class="font-bold text-[#00b894]">Đầu ra:</span> Xóa 2 phiên khỏi hàng đợi, <strong>không tạo phòng</strong>: Máy chủ tạo thẳng trận (<code class="bg-gray-100 px-1 rounded">ma_tran</code>), chọn ngẫu nhiên quân X/O, chốt hạng 2 bên (N07.4), đưa cả 2 vào bàn cờ và chạy đồng hồ 7 phút ngay, không qua bước "Sẵn sàng".
+                    </div>
+                    <div class="mt-1 text-[10.5px] text-amber-700 bg-amber-50 p-1 rounded border border-amber-200 leading-tight">
+                        <strong>Chống tăng điểm gian lận:</strong> Ưu tiên ghép cùng hạng (E với E, A với A...). Nếu chưa có thì cho ghép chênh tối đa 1 bậc (ví dụ D với E); không bao giờ ghép chênh từ 2 bậc trở lên. Ván chênh 1 bậc tính điểm theo quy tắc ở N11.1. Chỉ Đấu thường mới có phòng (N02, N03.2); ván xếp hạng không có phòng chờ, không chơi lại, kết thúc thì cả 2 về Sảnh.
+                    </div>
+                </div>
+                <!-- N04.3 -->
+                <div class="bg-white p-2.5 rounded-lg border border-gray-200 hover:border-purple-300 shadow-sm transition-all">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-xs font-bold text-[#6a1b9a]">N04.3 Xem bảng xếp hạng</h3>
+                        <span class="text-[10px] text-gray-400 font-mono">P2.7</span>
+                    </div>
+                    <div class="mt-1 text-[11px] text-gray-700 leading-snug">
+                        <span class="font-bold text-[#0984e3]">Đầu vào:</span> Lệnh bấm "Xếp hạng" tại Sảnh.
+                    </div>
+
+                    <div class="mt-1 text-[11px] text-gray-700 leading-snug">
+                        <span class="font-bold text-[#00b894]">Đầu ra:</span> Danh sách người chơi đứng đầu (<code class="bg-gray-100 px-1 rounded ">ten_hien_thi</code>, cấp độ 1-10, hạng A-E (người mới = cấp 1, hạng E), <code class="bg-gray-100 px-1 rounded ">diem_xep_hang</code>, thắng/thua) và vị trí, hạng của chính mình.
+                    </div>
+                    <div class="mt-1 text-[10.5px] text-amber-700 bg-amber-50 p-1 rounded border border-amber-200 leading-tight">
+                        <strong>Quy tắc:</strong> Chỉ đọc; số liệu do máy chủ cung cấp, máy khách không tự sửa điểm.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Nhóm N05: Xem đấu -->
+            <div class="mb-2 mt-4 flex items-center text-gray-700 font-bold text-xs uppercase">
+                <span class="mr-1.5 text-purple-600 text-[10px]">▼</span> Xem đấu (Khán giả)
+                <span class="ml-auto text-[10px] bg-gray-200 text-gray-700 px-1.5 py-0.5 rounded font-mono">N05</span>
+            </div>
+            <div class="border-l-2 border-purple-300 pl-2.5 ml-1 space-y-3">
+                <div class="bg-white p-2.5 rounded-lg border border-gray-200 hover:border-purple-300 shadow-sm transition-all">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-xs font-bold text-[#6a1b9a]">N05.1 Xem danh sách phòng đang đấu</h3>
+                        <span class="text-[10px] text-gray-400 font-mono">P2.9</span>
+                    </div>
+                    <div class="mt-1 text-[11px] text-gray-700 leading-snug">
+                        <span class="font-bold text-[#0984e3]">Đầu vào:</span> Lệnh bấm "Xem đấu" tại Sảnh.
+                    </div>
+                    <div class="mt-1 text-[11px] text-gray-700 leading-snug">
+                        <span class="font-bold text-[#00b894]">Đầu ra:</span> Danh sách phòng đang thi đấu, mỗi phòng có mã xem riêng <code class="bg-gray-100 px-1 rounded">ma_xem</code> (khác <code class="bg-gray-100 px-1 rounded">ma_phong</code>), kèm tên 2 người chơi, hạng, loại ván (Xếp hạng/Thường/Giải) và số khán giả.
+                    </div>
+                    <div class="mt-1 text-[10.5px] text-amber-700 bg-amber-50 p-1 rounded border border-amber-200 leading-tight">
+                        <strong>Quy tắc:</strong> Dùng <code>ma_xem</code> riêng để không lộ <code>ma_phong</code> dùng vào phòng. Ván với máy không hiện trong danh sách. Ván xếp hạng không có phòng nên chỉ có mã xem.
+                    </div>
+                </div>
+
+                <div class="bg-white p-2.5 rounded-lg border border-gray-200 hover:border-purple-300 shadow-sm transition-all">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-xs font-bold text-[#6a1b9a]">N05.2 Xem đấu phòng khác</h3>
+                        <span class="text-[10px] text-gray-400 font-mono">P2.10</span>
+                    </div>
+                    <div class="mt-1 text-[11px] text-gray-700 leading-snug">
+                        <span class="font-bold text-[#0984e3]">Đầu vào:</span> Lệnh bấm "Xem đấu", chọn <code class="bg-gray-100 px-1 rounded text-red-500">ma_xem</code> từ danh sách N05.1.
+                    </div>
+                    <div class="mt-1 text-[11px] text-gray-700 leading-snug">
+                        <span class="font-bold text-[#00b894]">Đầu ra:</span> Máy chủ thêm phiên vào kênh khán giả (chỉ đọc), gửi bàn cờ hiện tại và phát trực tiếp từng nước đi mới; thêm tên người xem vào danh sách khán giả của phòng.
+                    </div>
+                    <div class="mt-1 text-[10.5px] text-amber-700 bg-amber-50 p-1 rounded border border-amber-200 leading-tight">
+                        <strong>Quy tắc:</strong> Chỉ người chơi đã vào Sảnh (đã có tên) mới được xem; không cho phép xem ẩn danh, tên luôn hiển thị với 2 người chơi. Khán giả không đánh cờ, không trò chuyện; Máy chủ từ chối mọi nước đi từ khán giả. Không xem được khi đang xếp hàng tìm trận hoặc đang trong phòng.
+                    </div>
+                </div>
+
+                <div class="bg-white p-2.5 rounded-lg border border-gray-200 hover:border-purple-300 shadow-sm transition-all">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-xs font-bold text-[#6a1b9a]">N05.3 Thoát chế độ xem</h3>
+                        <span class="text-[10px] text-gray-400 font-mono">P2.11</span>
+                    </div>
+                    <div class="mt-1 text-[11px] text-gray-700 leading-snug">
+                        <span class="font-bold text-[#0984e3]">Đầu vào:</span> Bấm "Thoát xem", hoặc được ghép trận (N03.2, N04.2), hoặc mất kết nối (N10.1).
+                    </div>
+                    <div class="mt-1 text-[11px] text-gray-700 leading-snug">
+                        <span class="font-bold text-[#00b894]">Đầu ra:</span> Máy chủ xóa phiên khỏi kênh khán giả, cập nhật danh sách khán giả của phòng, đưa người xem về Sảnh.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Nhóm N06 -->
+            <div class="mb-2 mt-4 flex items-center text-gray-700 font-bold text-xs uppercase">
+                <span class="mr-1.5 text-purple-600 text-[10px]">▼</span> Đấu giải
+                <span class="ml-auto text-[10px] bg-gray-200 text-gray-700 px-1.5 py-0.5 rounded font-mono">N06</span>
+            </div>
+            <div class="border-l-2 border-purple-300 pl-2.5 ml-1 space-y-3">
+                <div class="bg-white p-2.5 rounded-lg border border-gray-200 hover:border-purple-300 shadow-sm transition-all">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-xs font-bold text-[#6a1b9a]">N06.1 Xem & đăng ký giải đấu</h3>
+                        <span class="text-[10px] text-gray-400 font-mono">P2.13</span>
+                    </div>
+                    <div class="mt-1 text-[11px] text-gray-700 leading-snug">
+                        <span class="font-bold text-[#0984e3]">Đầu vào:</span> Lệnh bấm "Đấu giải", chọn giải theo hạng (E-A), bấm "Đăng ký".
+                    </div>
+                    <div class="mt-1 text-[11px] text-gray-700 leading-snug">
+                        <span class="font-bold text-[#00b894]">Đầu ra:</span> Máy chủ kiểm tra <code class="bg-gray-100 px-1 rounded">ma_nguoi_choi</code> đúng bậc của giải, đạt cấp độ 5 trở lên (N11.3), không bị cấm đấu xếp hạng, không đang xếp hàng/trong phòng/trận; thêm vào danh sách giải (hiện số người đã đăng ký / 8) và khóa các nút Tạo/Vào phòng, Chơi ngay, Đấu thường.
+                    </div>
+                    <div class="mt-1 text-[10.5px] text-amber-700 bg-amber-50 p-1 rounded border border-amber-200 leading-tight">
+                        <strong>Điều kiện:</strong> Mỗi giải chỉ nhận người cùng hạng (hạng chốt lúc đăng ký). Mỗi người chỉ ở 1 giải tại một thời điểm. Giải bắt đầu khi đủ 8 người. Chỉ người chơi từ cấp độ 5 trở lên mới được đăng ký, để không thể tạo nhiều tài khoản mới rồi vào giải liên tục.
+                    </div>
+                </div>
+
+                <div class="bg-white p-2.5 rounded-lg border border-gray-200 hover:border-purple-300 shadow-sm transition-all">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-xs font-bold text-[#6a1b9a]">N06.2 Hủy đăng ký giải</h3>
+                        <span class="text-[10px] text-gray-400 font-mono">P2.14</span>
+                    </div>
+                    <div class="mt-1 text-[11px] text-gray-700 leading-snug">
+                        <span class="font-bold text-[#0984e3]">Đầu vào:</span> Bấm "Hủy đăng ký" trước khi giải bắt đầu.
+                    </div>
+                    <div class="mt-1 text-[11px] text-gray-700 leading-snug">
+                        <span class="font-bold text-[#00b894]">Đầu ra:</span> Máy chủ xóa phiên khỏi danh sách giải, cập nhật số người đăng ký và mở khóa lại các nút ở Sảnh.
+                    </div>
+                    <div class="mt-1 text-[10.5px] text-amber-700 bg-amber-50 p-1 rounded border border-amber-200 leading-tight">
+                        <strong>Quy tắc:</strong> Sau khi giải bắt đầu không được hủy; bỏ cuộc tính là thua các trận còn lại.
+                    </div>
+                </div>
+
+                <div class="bg-white p-2.5 rounded-lg border border-gray-200 hover:border-purple-300 shadow-sm transition-all">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-xs font-bold text-[#6a1b9a]">N06.3 Xem bảng đấu & lịch thi đấu</h3>
+                        <span class="text-[10px] text-gray-400 font-mono">P2.15</span>
+                    </div>
+                    <div class="mt-1 text-[11px] text-gray-700 leading-snug">
+                        <span class="font-bold text-[#0984e3]">Đầu vào:</span> Bấm "Bảng đấu" của giải đang tham gia hoặc đang diễn ra.
+                    </div>
+                    <div class="mt-1 text-[11px] text-gray-700 leading-snug">
+                        <span class="font-bold text-[#00b894]">Đầu ra:</span> Bảng A/B với điểm bảng và thứ hạng, lịch và kết quả từng trận, nhánh bán kết - chung kết; cập nhật theo thời gian thực. Chỉ đọc.
+                    </div>
+                </div>
+
+                <div class="bg-white p-2.5 rounded-lg border border-gray-200 hover:border-purple-300 shadow-sm transition-all">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-xs font-bold text-[#6a1b9a]">N06.4 Vào trận giải</h3>
+                        <span class="text-[10px] text-gray-400 font-mono">P2.16</span>
+                    </div>
+                    <div class="mt-1 text-[11px] text-gray-700 leading-snug">
+                        <span class="font-bold text-[#0984e3]">Đầu vào:</span> Thông báo đến lượt thi đấu, bấm "Vào trận" (trong 60 giây).
+                    </div>
+                    <div class="mt-1 text-[11px] text-gray-700 leading-snug">
+                        <span class="font-bold text-[#00b894]">Đầu ra:</span> Máy chủ tạo thẳng trận giải (không có phòng): chọn ngẫu nhiên quân X/O, chốt hạng, chạy đồng hồ 7 phút như Đấu xếp hạng, không có Hòa.
+                    </div>
+                    <div class="mt-1 text-[10.5px] text-amber-700 bg-amber-50 p-1 rounded border border-amber-200 leading-tight">
+                        <strong>Quy tắc:</strong> Không vào kịp 60 giây: thua kỹ thuật (cả hai không vào kịp: cả hai thua). Ngắt kết nối giữa trận theo N10.1; rời trận giữa chừng bị xử thua và phạt như N09.4. Ván giải không chơi lại.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== CỘT 3: NGƯỜI CHƠI TRONG PHÒNG ==================== -->
+        <div class="bg-[#fcfaf9] border border-gray-300 rounded-xl shadow-sm min-w-[360px] max-w-[360px] p-3.5 shrink-0 flex flex-col max-h-full overflow-y-auto">
+            <div class="mb-3 border-b pb-2">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-[#0984e3] font-bold text-base uppercase tracking-wide">Người chơi (Trong phòng)</h2>
+                    <span class="bg-blue-100 text-[#0984e3] text-[11px] font-bold px-2 py-0.5 rounded-full">Màn hình 3</span>
+                </div>
+                <p class="text-[11px] text-gray-500 mt-0.5">3 nhóm chức năng · Thi đấu, Trò chuyện & Kết thúc</p>
+            </div>
+
+            <!-- Nhóm N07: Chuẩn bị trận -->
+            <div class="mb-2 flex items-center text-gray-700 font-bold text-xs uppercase">
+                <span class="mr-1.5 text-blue-600 text-[10px]">▼</span> Chuẩn bị trận đấu
+                <span class="ml-auto text-[10px] bg-gray-200 text-gray-700 px-1.5 py-0.5 rounded font-mono">N07</span>
+            </div>
+            <div class="border-l-2 border-blue-300 pl-2.5 ml-1 space-y-3 mb-4">
+                <!-- N07.1 -->
+                <div class="bg-white p-2.5 rounded-lg border border-gray-200 hover:border-blue-300 shadow-sm transition-all">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-xs font-bold text-[#6a1b9a]">N07.1 Xác nhận sẵn sàng</h3>
+                        <span class="text-[10px] text-gray-400 font-mono">P3.1</span>
+                    </div>
+                    <div class="mt-1 text-[11px] text-gray-700 leading-snug">
+                        <span class="font-bold text-[#0984e3]">Đầu vào:</span> Trạng thái sẵn sàng (<code class="bg-gray-100 px-1 rounded">dung / sai</code>).
+                    </div>
+                    <div class="mt-1 text-[11px] text-gray-700 leading-snug">
+                        <span class="font-bold text-[#00b894]">Đầu ra:</span> Cập nhật <code class="bg-gray-100 px-1 rounded">trang_thai_san_sang</code>, đồng bộ biểu tượng trạng thái 2 bên.
+                    </div>
+                    <div class="mt-1 text-[10.5px] text-amber-700 bg-amber-50 p-1 rounded border border-amber-200 leading-tight">
+                        <strong>Mặc định:</strong> Người tạo phòng vào phòng là <code>san_sang = dung</code> ngay; người vào sau phải bấm "Sẵn sàng".
+                    </div>
+                </div>
+
+
+                <div class="bg-white p-2.5 rounded-lg border border-gray-200 hover:border-blue-300 shadow-sm transition-all">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-xs font-bold text-[#6a1b9a]">N07.2 Chọn quân X / O</h3>
+                        <span class="text-[10px] text-gray-400 font-mono">P3.2</span>
+                    </div>
+                    <div class="mt-1 text-[11px] text-gray-700 leading-snug">
+                        <span class="font-bold text-[#0984e3]">Đầu vào:</span> Lựa chọn quân (<code class="bg-gray-100 px-1 rounded">X</code> hoặc <code class="bg-gray-100 px-1 rounded">O</code>) của người tạo phòng.
+                    </div>
+                    <div class="mt-1 text-[11px] text-gray-700 leading-snug">
+                        <span class="font-bold text-[#00b894]">Đầu ra:</span> Cập nhật <code class="bg-gray-100 px-1 rounded">phe_quan</code>, người còn lại tự nhận quân đối diện, đồng bộ hiển thị 2 bên.
+                    </div>
+                    <div class="mt-1 text-[10.5px] text-amber-700 bg-amber-50 p-1 rounded border border-amber-200 leading-tight">
+                        <strong>Quy tắc:</strong> Chỉ dùng cho ván thường (phòng tự tạo, Đấu thường). Chỉ người tạo phòng (hoặc người vào hàng đợi trước) được chọn, chỉ đổi được trước khi trận bắt đầu. Ván xếp hạng: Máy chủ chọn ngẫu nhiên quân để công bằng, ẩn nút chọn. X luôn đi trước.
+                    </div>
+                </div>
+
+                <!-- N07.2 -->
+                <div class="bg-white p-2.5 rounded-lg border border-gray-200 hover:border-blue-300 shadow-sm transition-all">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-xs font-bold text-[#6a1b9a]">N07.3 Chọn chế độ thời gian</h3>
+                        <span class="text-[10px] text-gray-400 font-mono">P3.11</span>
+                    </div>
+                    <div class="mt-1 text-[11px] text-gray-700 leading-snug">
+                        <span class="font-bold text-[#0984e3]">Đầu vào:</span> Lựa chọn Tự do hoặc Tùy chỉnh (số phút, tối đa 15) của người tạo phòng.
+                    </div>
+                    <div class="mt-1 text-[11px] text-gray-700 leading-snug">
+                        <span class="font-bold text-[#00b894]">Đầu ra:</span> Cập nhật <code class="bg-gray-100 px-1 rounded">che_do_thoi_gian</code> và <code class="bg-gray-100 px-1 rounded">thoi_luong_tran</code>, đồng bộ hiển thị 2 bên.
+                    </div>
+                    <div class="mt-1 text-[10.5px] text-amber-700 bg-amber-50 p-1 rounded border border-amber-200 leading-tight">
+                        <strong>Quy tắc:</strong> Chỉ dùng cho ván thường (phòng tự tạo, Đấu thường). Người tạo phòng (hoặc người vào hàng đợi trước) được chọn, chỉ đổi được trước khi trận bắt đầu. Ván xếp hạng mặc định chơi nhanh 7 phút, ẩn nút chọn.
+                    </div>
+                </div>
+
+                <div class="bg-white p-2.5 rounded-lg border border-gray-200 hover:border-blue-300 shadow-sm transition-all">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-xs font-bold text-[#6a1b9a]">N07.4 Khởi tạo trận đấu</h3>
+                        <span class="text-[10px] text-gray-400 font-mono">P3.3</span>
+                    </div>
+                    <div class="mt-1 text-[11px] text-gray-700 leading-snug">
+                        <span class="font-bold text-[#0984e3]">Đầu vào:</span> Ván thường (có phòng): đủ 2 người chơi + người tham gia (không phải chủ phòng) bấm "Sẵn sàng" (chủ phòng đã mặc định sẵn sàng). Ván xếp hạng: ghép cặp xong (N04.2) là khởi tạo ngay.
+                    </div>
+                    <div class="mt-1 text-[11px] text-gray-700 leading-snug">
+                        <span class="font-bold text-[#00b894]">Đầu ra:</span> Sinh <code class="bg-gray-100 px-1 rounded text-blue-600">ma_tran</code>, áp dụng quân X/O (ván thường: theo lựa chọn ở N07.2; ván xếp hạng: Máy chủ ngẫu nhiên), chốt <code class="bg-gray-100 px-1 rounded">bac_xep_hang</code> 2 bên, tạo bàn cờ 19x19 rỗng, thiết lập X đi trước (<code class="bg-gray-100 px-1 rounded">luot_hien_tai</code>), khởi tạo đồng hồ theo chế độ thời gian (xếp hạng: 7 phút; ván thường: theo N07.3).
+                    </div>
+                </div>
+            </div>
+
+            <!-- Nhóm N08: Thi đấu -->
+            <div class="mb-2 flex items-center text-gray-700 font-bold text-xs uppercase">
+                <span class="mr-1.5 text-blue-600 text-[10px]">▼</span> Thi đấu bàn cờ 19x19
+                <span class="ml-auto text-[10px] bg-gray-200 text-gray-700 px-1.5 py-0.5 rounded font-mono">N08</span>
+            </div>
+            <div class="border-l-2 border-blue-300 pl-2.5 ml-1 space-y-3 mb-4">
+                <!-- N08.1 -->
+                <div class="bg-white p-2.5 rounded-lg border-2 border-amber-300 bg-amber-50/20 shadow-sm transition-all">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-xs font-bold text-blue-900">N08.1 Đánh cờ (Gửi nước đi)</h3>
+                        <span class="text-[10px] bg-amber-200 text-amber-900 px-1 rounded font-bold">Trọng tâm</span>
+                    </div>
+                    <div class="mt-1 text-[11px] text-gray-700 leading-snug">
+                        <span class="font-bold text-[#0984e3]">Đầu vào:</span> Tọa độ <code class="bg-gray-100 px-1 rounded">dong, cot</code>, <code class="bg-gray-100 px-1 rounded">ma_tran</code>, <code class="bg-gray-100 px-1 rounded">ma_yeu_cau</code>, <code class="bg-gray-100 px-1 rounded">phien_ban_ky_vong</code>.
+                    </div>
+                    <div class="mt-1 text-[11px] text-gray-700 leading-snug">
+                        <span class="font-bold text-[#00b894]">Đầu ra:</span> Trạng thái bàn cờ mới, tăng <code class="bg-gray-100 px-1 rounded">phien_ban</code>, chuyển lượt đánh, hoặc trả mã lỗi nước đi không hợp lệ.
+                    </div>
+                    <div class="mt-1 text-[10.5px] text-gray-600 bg-gray-100 p-1.5 rounded leading-tight">
+                        <strong>Máy chủ kiểm tra:</strong> Đúng lượt? Tọa độ trong 19x19? Ô còn trống? Bản cờ khớp phiên bản? Chống gửi đúp qua ma_yeu_cau. Cách nước trước của mình tối thiểu 2,5 giây (nhanh hơn thì bị từ chối).
+                    </div>
+                </div>
+
+                <!-- N08.2 -->
+                <div class="bg-white p-2.5 rounded-lg border border-gray-200 hover:border-blue-300 shadow-sm transition-all">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-xs font-bold text-[#6a1b9a]">N08.2 Xác định kết quả thắng / thua</h3>
+                        <span class="text-[10px] text-gray-400 font-mono">P3.4</span>
+                    </div>
+                    <div class="mt-1 text-[11px] text-gray-700 leading-snug">
+                        <span class="font-bold text-[#0984e3]">Đầu vào:</span> Sau mỗi nước đi hợp lệ.
+                    </div>
+                    <div class="mt-1 text-[11px] text-gray-700 leading-snug">
+                        <span class="font-bold text-[#00b894]">Đầu ra:</span> Nếu đạt 5 quân liên tiếp (ngang, dọc, chéo) -> Phát thông báo Thắng/Thua; Đầy 361 ô hoặc hết đồng hồ tổng trận -> không có Hòa, xét thời gian đã dùng (N08.3), bên dùng ít hơn thắng; Khóa thao tác bàn cờ.
+                    </div>
+                </div>
+
+                <!-- N08.3 -->
+                <div class="bg-white p-2.5 rounded-lg border border-gray-200 hover:border-blue-300 shadow-sm transition-all">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-xs font-bold text-[#6a1b9a]">N08.3 Đồng hồ thời gian trận</h3>
+                        <span class="text-[10px] text-gray-400 font-mono">P3.10</span>
+                    </div>
+                    <div class="mt-1 text-[11px] text-gray-700 leading-snug">
+                        <span class="font-bold text-[#0984e3]">Đầu vào:</span> Mỗi lượt đánh hợp lệ, hoặc một đồng hồ riêng về 0, hoặc đồng hồ tổng trận về 0.
+                    </div>
+                    <div class="mt-1 text-[11px] text-gray-700 leading-snug">
+                        <span class="font-bold text-[#00b894]">Đầu ra:</span> Máy chủ chạy 3 đồng hồ: 1 đồng hồ tổng trận chạy theo thời gian thực (<code class="bg-gray-100 px-1 rounded">thoi_gian_tran_con_lai</code>) và 2 đồng hồ riêng của X và O (<code class="bg-gray-100 px-1 rounded">thoi_gian_con_lai</code>). Đến lượt bên nào thì chỉ đồng hồ riêng bên đó chạy, bên còn lại đóng băng chờ tới lượt mới. Đồng hồ riêng về 0 -> bên đó thua. Đồng hồ tổng về 0 mà chưa phân thắng bại -> so tổng thời gian đã dùng của 2 bên, bên dùng ít hơn thắng. Đồng bộ cho 2 bên và khán giả.
+                    </div>
+                    <div class="mt-1 text-[10.5px] text-amber-700 bg-amber-50 p-1 rounded border border-amber-200 leading-tight">
+                        <strong>Quy tắc:</strong> Đấu xếp hạng và ván trong giải: mặc định chơi nhanh 7 phút (tổng trận 7 phút, mỗi người 7 phút). Đấu thường: chọn Tự do (không giới hạn, không đếm ngược) hoặc tùy chỉnh tối đa 15 phút (cùng cơ chế 3 đồng hồ), nếu 2 bên đánh hết bàn cờ thì hoà. Máy chủ luôn ghi thời gian đã dùng của mỗi bên, kể cả chế độ Tự do. Đồng hồ do máy chủ tính, tạm dừng khi chờ kết nối lại (N10.1); ván chơi lại (N09.3) được cấp lại đồng hồ.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Nhóm N07 & N08: Giao tiếp & Kết thúc -->
+            <div class="mb-2 flex items-center text-gray-700 font-bold text-xs uppercase">
+                <span class="mr-1.5 text-blue-600 text-[10px]">▼</span> Giao tiếp & Kết thúc
+                <span class="ml-auto text-[10px] bg-gray-200 text-gray-700 px-1.5 py-0.5 rounded font-mono">N09</span>
+            </div>
+            <div class="border-l-2 border-blue-300 pl-2.5 ml-1 space-y-3">
+                <!-- N09.1 -->
+                <div class="bg-white p-2.5 rounded-lg border border-gray-200 hover:border-blue-300 shadow-sm transition-all">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-xs font-bold text-[#6a1b9a]">N09.1 Trò chuyện trong phòng</h3>
+                        <span class="text-[10px] text-gray-400 font-mono">P3.5</span>
+                    </div>
+                    <div class="mt-1 text-[11px] text-gray-700 leading-snug">
+                        <span class="font-bold text-[#0984e3]">Đầu vào:</span> Văn bản <code class="bg-gray-100 px-1 rounded">noi_dung</code>, mã <code class="bg-gray-100 px-1 rounded">ma_phong</code>.
+                    </div>
+                    <div class="mt-1 text-[11px] text-gray-700 leading-snug">
+                        <span class="font-bold text-[#00b894]">Đầu ra:</span> Máy chủ gắn <code class="bg-gray-100 px-1 rounded">ma_nguoi_gui</code>, phát sóng tin nhắn đến đúng 2 máy trong phòng. Mỗi người chỉ gửi được 1 tin / 5 giây (chống gửi dồn).
+                    </div>
+                </div>
+
+                <div class="bg-white p-2.5 rounded-lg border border-gray-200 hover:border-blue-300 shadow-sm transition-all">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-xs font-bold text-[#6a1b9a]">N09.2 Xem danh sách khán giả</h3>
+                        <span class="text-[10px] text-gray-400 font-mono">P3.9</span>
+                    </div>
+                    <div class="mt-1 text-[11px] text-gray-700 leading-snug">
+                        <span class="font-bold text-[#0984e3]">Đầu vào:</span> Sự kiện có người vào/ra xem phòng (N05.2, N05.3).
+                    </div>
+                    <div class="mt-1 text-[11px] text-gray-700 leading-snug">
+                        <span class="font-bold text-[#00b894]">Đầu ra:</span> Máy chủ gửi cho 2 người chơi danh sách tên hiển thị (<code class="bg-gray-100 px-1 rounded">ten_hien_thi</code>) của từng khán giả đang xem, cập nhật theo thời gian thực.
+                    </div>
+                    <div class="mt-1 text-[10.5px] text-amber-700 bg-amber-50 p-1 rounded border border-amber-200 leading-tight">
+                        <strong>Quy tắc:</strong> Hiển thị tên cụ thể từng khán giả, không chỉ số lượng; không cho phép xem ẩn danh. Khán giả không thấy tin nhắn trò chuyện của 2 người chơi.
+                    </div>
+                </div>
+
+                <!-- N09.3 -->
+                <div class="bg-white p-2.5 rounded-lg border border-gray-200 hover:border-blue-300 shadow-sm transition-all">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-xs font-bold text-[#6a1b9a]">N09.3 Yêu cầu & Đồng ý chơi lại</h3>
+                        <span class="text-[10px] text-gray-400 font-mono">P3.6</span>
+                    </div>
+                    <div class="mt-1 text-[11px] text-gray-700 leading-snug">
+                        <span class="font-bold text-[#0984e3]">Đầu vào:</span> Bấm nút "Chơi lại".
+                    </div>
+                    <div class="mt-1 text-[11px] text-gray-700 leading-snug">
+                        <span class="font-bold text-[#00b894]">Đầu ra:</span> Đợi xác nhận 2 bên -> Chỉ ván thường (có phòng): đổi quân X/O luân phiên, tạo ván cờ mới, xóa bàn cờ cũ. Ván xếp hạng không có phòng nên không chơi lại.
+                    </div>
+                </div>
+
+                <!-- N09.4 -->
+                <div class="bg-white p-2.5 rounded-lg border border-gray-200 hover:border-blue-300 shadow-sm transition-all">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-xs font-bold text-[#6a1b9a]">N09.4 Rời phòng chơi</h3>
+                        <span class="text-[10px] text-gray-400 font-mono">P3.7</span>
+                    </div>
+                    <div class="mt-1 text-[11px] text-gray-700 leading-snug">
+                        <span class="font-bold text-[#0984e3]">Đầu vào:</span> Bấm nút "Rời phòng".
+                    </div>
+                    <div class="mt-1 text-[11px] text-gray-700 leading-snug">
+                        <span class="font-bold text-[#00b894]">Đầu ra:</span> Đưa người chơi về Sảnh. Nếu ván đang diễn ra: người rời bị xử thua ngay (không có thời gian chờ), đối thủ nhận thông báo "Đối thủ đã rời - Bạn thắng"; phòng được đặt lại để đón người mới.
+                    </div>
+                    <div class="mt-1 text-[10.5px] text-amber-700 bg-amber-50 p-1 rounded border border-amber-200 leading-tight">
+                        <strong>Phạt rời phòng:</strong> Cố tình bấm "Rời phòng" (ván xếp hạng: "Rời trận") giữa ván với người (ván với máy chỉ bị hủy, không phạt): bị cấm đấu xếp hạng 30 giây và bắt buộc chơi 1 trận Đấu thường (N03.1) mới được đấu xếp hạng lại. Hình phạt do máy chủ ghi nhận theo ma_nguoi_choi, máy khách không tự gỡ.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== CỘT 4: XỬ LÝ HỆ THỐNG / SERVER ==================== -->
+        <div class="bg-[#fcfaf9] border border-gray-300 rounded-xl shadow-sm min-w-[340px] max-w-[340px] p-3.5 shrink-0 flex flex-col max-h-full overflow-y-auto">
+            <div class="mb-3 border-b pb-2">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-[#2c3e50] font-bold text-base uppercase tracking-wide">Máy chủ (Tự động)</h2>
+                    <span class="bg-slate-200 text-[#2c3e50] text-[11px] font-bold px-2 py-0.5 rounded-full">Chạy nền</span>
+                </div>
+                <p class="text-[11px] text-gray-500 mt-0.5">Xử lý ngắt kết nối, xếp hạng & Đồng bộ bộ nhớ</p>
+            </div>
+
+            <!-- Nhóm N10: Xử lý kết nối -->
+            <div class="mb-2 flex items-center text-gray-700 font-bold text-xs uppercase">
+                <span class="mr-1.5 text-slate-700 text-[10px]">▼</span> Xử lý kết nối & Ngoại lệ
+                <span class="ml-auto text-[10px] bg-gray-200 text-gray-700 px-1.5 py-0.5 rounded font-mono">N10</span>
+            </div>
+            <div class="border-l-2 border-slate-400 pl-2.5 ml-1 space-y-3 mb-4">
+                <!-- N10.1 -->
+                <div class="bg-white p-2.5 rounded-lg border border-gray-200 hover:border-slate-400 shadow-sm transition-all">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-xs font-bold text-[#6a1b9a]">N10.1 Phát hiện ngắt kết nối</h3>
+                        <span class="text-[10px] text-gray-400 font-mono">P4.1</span>
+                    </div>
+                    <div class="mt-1 text-[11px] text-gray-700 leading-snug">
+                        <span class="font-bold text-[#0984e3]">Đầu vào:</span> Kết nối đóng bất ngờ (đóng thẻ trình duyệt, mất mạng).
+                    </div>
+                    <div class="mt-1 text-[11px] text-gray-700 leading-snug">
+                        <span class="font-bold text-[#00b894]">Đầu ra:</span> Máy chủ lập tức nhận diện <code class="bg-gray-100 px-1 rounded text-red-500">ma_ket_noi</code>, xóa phiên khỏi Hàng đợi nếu đang tìm trận. Nếu đang trong ván: giữ nguyên phiên và bàn cờ, tạm dừng ván, báo đối thủ "Đối thủ mất kết nối" và bắt đầu đếm ngược <strong>1 phút</strong> chờ kết nối lại. Kết nối lại kịp thì ván tiếp tục bình thường.
+                    </div>
+                </div>
+
+                <!-- N10.2 -->
+                <div class="bg-white p-2.5 rounded-lg border border-gray-200 hover:border-slate-400 shadow-sm transition-all">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-xs font-bold text-[#6a1b9a]">N10.2 Dừng trận & Dọn dẹp phòng</h3>
+                        <span class="text-[10px] text-gray-400 font-mono">P4.2</span>
+                    </div>
+                    <div class="mt-1 text-[11px] text-gray-700 leading-snug">
+                        <span class="font-bold text-[#0984e3]">Đầu vào:</span> Người chơi không kết nối lại kịp sau 1 phút, hoặc bấm "Rời phòng" khi ván đang diễn ra.
+                    </div>
+                    <div class="mt-1 text-[11px] text-gray-700 leading-snug">
+                        <span class="font-bold text-[#00b894]">Đầu ra:</span> Ván người với người: khóa ván cờ, xử người ngắt kết nối/thoát thua và đối thủ thắng. Ván với máy: hủy ván, không tính kết quả. Hủy phòng nếu trống người để giải phóng bộ nhớ.
+                    </div>
+                    <div class="mt-1 text-[10.5px] text-amber-700 bg-amber-50 p-1 rounded border border-amber-200 leading-tight">
+                        <strong>Quy tắc:</strong> Chống giữ điểm: bên thắng chỉ được cộng 50% điểm thắng, bên thua bị trừ 100% điểm thua (điểm thắng tính theo bậc đối thủ như N11.1; điểm cộng làm tròn xuống số nguyên). Ván với máy bị hủy ngay khi người chơi rời. Bấm "Rời phòng" giữa ván với người không được chờ 1 phút, xử thua ngay theo cùng mức điểm. Dữ liệu mất hoàn toàn khi máy chủ khởi động lại.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Nhóm N11 -->
+            <div class="mb-2 mt-4 flex items-center text-gray-700 font-bold text-xs uppercase">
+                <span class="mr-1.5 text-slate-600 text-[10px]">▼</span> Xếp hạng & Cấp độ người chơi
+                <span class="ml-auto text-[10px] bg-gray-200 text-gray-700 px-1.5 py-0.5 rounded font-mono">N11</span>
+            </div>
+            <div class="border-l-2 border-slate-400 pl-2.5 ml-1 space-y-3">
+                <div class="bg-white p-2.5 rounded-lg border border-gray-200 hover:border-slate-300 shadow-sm transition-all">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-xs font-bold text-[#6a1b9a]">N11.1 Tính & cập nhật điểm xếp hạng</h3>
+                        <span class="text-[10px] text-gray-400 font-mono">P4.3</span>
+                    </div>
+                    <div class="mt-1 text-[11px] text-gray-700 leading-snug">
+                        <span class="font-bold text-[#0984e3]">Đầu vào:</span> Kết quả ván (Thắng / Thua) do máy chủ xác định ở N08.2, N08.3 hoặc N10.2.
+                    </div>
+                    <div class="mt-1 text-[11px] text-gray-700 leading-snug">
+                        <span class="font-bold text-[#00b894]">Đầu ra:</span> Máy chủ cộng/trừ <code class="bg-gray-100 px-1 rounded ">diem_xep_hang</code> theo bảng điểm và quy tắc đấu chênh bậc bên dưới, cập nhật thắng/thua, xét lên/xuống bậc, sắp xếp lại bảng xếp hạng, gửi điểm + bậc mới về máy khách.
+                    </div>
+                    <div class="mt-1 text-[10.5px] text-amber-700 bg-amber-50 p-1 rounded border border-amber-200 leading-tight">
+                        <strong>Quy tắc:</strong> Mỗi trận tính điểm 1 lần (khóa theo <code>ma_tran</code>). Không tính xếp hạng: phòng tự tạo (N02), ván Đấu thường, ván với máy; ván trong giải tính riêng ở N11.2. Ván bị gián đoạn vẫn tính: người ngắt/thoát bị xử thua (trừ 100%), đối thủ thắng chỉ cộng 50% điểm thắng (xem N10.2, làm tròn xuống). Điểm tính theo hạng đã chốt lúc bắt đầu trận (N07.4), hạng đổi giữa chừng không ảnh hưởng ván này. Mỗi cặp đấu tối đa 3 ván tính xếp hạng trong 24 giờ; mỗi ván tính hạn riêng 24 giờ kể từ lúc ván đó kết thúc (ván 4 chỉ được tính khi ván 1 đã quá 24 giờ). Điểm khởi đầu 0, người mới là hạng E; hạng E thua không bị trừ điểm. Đấu chênh 1 bậc: người thắng được cộng điểm thắng của bậc đối thủ, người thua chỉ bị trừ điểm thua của bậc mình. Ví dụ A gặp B: A thắng +20, B thua -10; B thắng +30, A thua -15. Không có kết quả Hòa.
+                    </div>
+                    <table class="mt-1.5 w-full text-[10.5px] text-center border border-gray-200 rounded overflow-hidden">
+                        <thead class="bg-slate-100 text-gray-700">
+                            <tr><th class="py-0.5">Hạng</th><th>Cần đạt</th><th>Thắng</th><th>Thua</th></tr>
+                        </thead>
+                        <tbody class="font-mono">
+                            <tr class="border-t"><td class="font-bold text-red-600">A (cao nhất)</td><td>≥ 1000</td><td class="text-green-600">+30</td><td class="text-red-500">-15</td></tr>
+                            <tr class="border-t"><td class="font-bold text-orange-600">B</td><td>≥ 750</td><td class="text-green-600">+20</td><td class="text-red-500">-10</td></tr>
+                            <tr class="border-t"><td class="font-bold text-amber-600">C</td><td>≥ 500</td><td class="text-green-600">+15</td><td class="text-red-500">-7</td></tr>
+                            <tr class="border-t"><td class="font-bold text-blue-600">D</td><td>≥ 250</td><td class="text-green-600">+10</td><td class="text-red-500">-5</td></tr>
+                            <tr class="border-t"><td class="font-bold text-gray-600">E (thấp nhất)</td><td>Mặc định (0-249)</td><td class="text-green-600">+5</td><td class="text-red-500">0</td></tr>
+                            <tr class="border-t bg-amber-50"><td colspan="4" class="font-bold text-amber-800 py-0.5">Đấu chênh 1 bậc (không còn điều chỉnh ±50%)</td></tr>
+                            <tr class="border-t"><td colspan="2" class="font-bold">Người thắng</td><td colspan="2" class="text-green-600">+ điểm thắng của bậc ĐỐI THỦ</td></tr>
+                            <tr class="border-t"><td colspan="2" class="font-bold">Người thua</td><td colspan="2" class="text-red-500">- điểm thua của bậc BẢN THÂN</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="bg-white p-2.5 rounded-lg border border-gray-200 hover:border-slate-300 shadow-sm transition-all">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-xs font-bold text-[#6a1b9a]">N11.2 Tính điểm xếp hạng giải đấu</h3>
+                        <span class="text-[10px] text-gray-400 font-mono">P4.6</span>
+                    </div>
+                    <div class="mt-1 text-[11px] text-gray-700 leading-snug">
+                        <span class="font-bold text-[#0984e3]">Đầu vào:</span> Kết quả từng trận và thứ hạng chung cuộc do máy chủ xác định ở N12.2.
+                    </div>
+                    <div class="mt-1 text-[11px] text-gray-700 leading-snug">
+                        <span class="font-bold text-[#00b894]">Đầu ra:</span> Máy chủ cộng <code class="bg-gray-100 px-1 rounded">diem_xep_hang</code> gồm: (1) mỗi trận thắng cộng điểm theo bảng; (2) thưởng thứ hạng cuối Bán kết, Á quân theo bảng; (3) <strong>Vô địch giải E, D, C, B: lập tức thăng lên bậc kế tiếp</strong> (ví dụ C nhảy thẳng lên B); riêng Vô địch giải A (bậc cao nhất) được cộng điểm theo bảng. Thua không bị trừ điểm. Cập nhật bảng xếp hạng, gửi điểm + bậc mới về máy khách.
+                    </div>
+                    <div class="mt-1 text-[10.5px] text-amber-700 bg-amber-50 p-1 rounded border border-amber-200 leading-tight">
+                        <strong>Quy tắc:</strong> Vô địch giải bậc nào thì lập tức thăng lên bậc kế tiếp (E→D, D→C, C→B, B→A). Nếu điểm hiện tại thấp hơn mốc của bậc mới thì nâng điểm lên đúng mốc đó (D 250, C 500, B 750, A 1000). Vô địch giải A không còn bậc để thăng nên được cộng điểm theo bảng. Ván giải không tính theo N11.1 và không bị giới hạn 3 ván/cặp/24 giờ. Mỗi giải tính điểm 1 lần (khóa theo <code>ma_giai_dau</code>). Người bỏ cuộc không được thưởng thứ hạng và không được thăng bậc. Ví dụ người hạng C vô địch giải C và thắng cả 5 trận: +15 x 5 = +75 điểm, rồi thăng thẳng lên B (nâng điểm lên 750 nếu đang thấp hơn).
+                    </div>
+                    <table class="mt-1.5 w-full text-[10.5px] text-center border border-gray-200 rounded overflow-hidden">
+                        <thead class="bg-slate-100 text-gray-700">
+                            <tr><th class="py-0.5">Giải</th><th>Mỗi trận thắng</th><th>Bán kết</th><th>Á quân</th><th>Vô địch</th></tr>
+                        </thead>
+                        <tbody class="font-mono">
+                            <tr class="border-t"><td class="font-bold text-red-600">A</td><td class="text-green-600">+30</td><td>+60</td><td>+120</td><td class="font-bold">+240</td></tr>
+                            <tr class="border-t"><td class="font-bold text-orange-600">B</td><td class="text-green-600">+20</td><td>+40</td><td>+80</td><td class="font-bold text-green-700">Thăng A</td></tr>
+                            <tr class="border-t"><td class="font-bold text-amber-600">C</td><td class="text-green-600">+15</td><td>+30</td><td>+60</td><td class="font-bold text-green-700">Thăng B</td></tr>
+                            <tr class="border-t"><td class="font-bold text-blue-600">D</td><td class="text-green-600">+10</td><td>+20</td><td>+40</td><td class="font-bold text-green-700">Thăng C</td></tr>
+                            <tr class="border-t"><td class="font-bold text-gray-600">E</td><td class="text-green-600">+5</td><td>+10</td><td>+20</td><td class="font-bold text-green-700">Thăng D</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="bg-white p-2.5 rounded-lg border border-gray-200 hover:border-slate-300 shadow-sm transition-all">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-xs font-bold text-[#6a1b9a]">N11.3 Tính điểm kinh nghiệm & cấp độ người chơi</h3>
+                        <span class="text-[10px] text-gray-400 font-mono">P4.7</span>
+                    </div>
+                    <div class="mt-1 text-[11px] text-gray-700 leading-snug">
+                        <span class="font-bold text-[#0984e3]">Đầu vào:</span> Ván có kết quả với người thật (Xếp hạng, Thường, Giải) do máy chủ xác định ở N08.2, N08.3 hoặc N10.2.
+                    </div>
+                    <div class="mt-1 text-[11px] text-gray-700 leading-snug">
+                        <span class="font-bold text-[#00b894]">Đầu ra:</span> Máy chủ cộng <code class="bg-gray-100 px-1 rounded">diem_kinh_nghiem</code>: thắng +20, thua +10. Cấp độ (1-10) là cấp cao nhất có mốc điểm kinh nghiệm không vượt quá tổng điểm kinh nghiệm (bảng dưới); gửi điểm kinh nghiệm và cấp mới về máy khách. Đạt cấp 5 thì mở quyền đăng ký giải (N06.1).
+                    </div>
+                    <div class="mt-1 text-[10.5px] text-amber-700 bg-amber-50 p-1 rounded border border-amber-200 leading-tight">
+                        <strong>Chống tạo tài khoản ảo:</strong> Chỉ cấp 5 trở lên (400 điểm kinh nghiệm) được đấu giải; tài khoản mới phải thắng ít nhất 20 ván (hoặc thua 40 ván) với người thật mới đạt. Ván với máy và ván bị hủy không cộng điểm kinh nghiệm. Ván Xếp hạng/Thường chỉ cộng điểm kinh nghiệm tối đa 3 ván/cặp/24 giờ (như N11.1); ván giải không bị giới hạn. Mỗi trận cộng điểm kinh nghiệm 1 lần (khóa theo <code>ma_tran</code>). Cấp độ chỉ tăng, không giảm.
+                    </div>
+                    <table class="mt-1.5 w-full text-[10.5px] text-center border border-gray-200 rounded overflow-hidden font-mono">
+                        <tbody><tr class="bg-slate-100"><th class="py-0.5">Cấp</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th></tr><tr class="border-t"><td class="font-bold">Điểm KN</td><td>0</td><td>100</td><td>200</td><td>300</td><td>400</td></tr><tr class="bg-slate-100"><th class="py-0.5">Cấp</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th></tr><tr class="border-t"><td class="font-bold">Điểm KN</td><td>500</td><td>600</td><td>700</td><td>800</td><td>900</td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Nhóm N12 -->
+            <div class="mb-2 mt-4 flex items-center text-gray-700 font-bold text-xs uppercase">
+                <span class="mr-1.5 text-slate-600 text-[10px]">▼</span> Điều hành giải đấu
+                <span class="ml-auto text-[10px] bg-gray-200 text-gray-700 px-1.5 py-0.5 rounded font-mono">N12</span>
+            </div>
+            <div class="border-l-2 border-slate-400 pl-2.5 ml-1 space-y-3">
+                <div class="bg-white p-2.5 rounded-lg border border-gray-200 hover:border-slate-300 shadow-sm transition-all">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-xs font-bold text-[#6a1b9a]">N12.1 Mở giải, chia bảng & lập lịch</h3>
+                        <span class="text-[10px] text-gray-400 font-mono">P4.4</span>
+                    </div>
+                    <div class="mt-1 text-[11px] text-gray-700 leading-snug">
+                        <span class="font-bold text-[#0984e3]">Đầu vào:</span> Đủ 8 người đăng ký cùng hạng trong một giải.
+                    </div>
+                    <div class="mt-1 text-[11px] text-gray-700 leading-snug">
+                        <span class="font-bold text-[#00b894]">Đầu ra:</span> Máy chủ tạo <code class="bg-gray-100 px-1 rounded">ma_giai_dau</code>, chia ngẫu nhiên 2 bảng A và B (mỗi bảng 4 người), lập lịch vòng tròn một lượt (mỗi người đấu 3 trận), thông báo cho người chơi và xếp trận lần lượt.
+                    </div>
+                    <div class="mt-1 text-[10.5px] text-amber-700 bg-amber-50 p-1 rounded border border-amber-200 leading-tight">
+                        <strong>Quy tắc:</strong> Chưa đủ 8 người thì giải ở trạng thái chờ. Mỗi người chỉ thi đấu 1 trận giải tại một thời điểm.
+                    </div>
+                </div>
+
+                <div class="bg-white p-2.5 rounded-lg border border-gray-200 hover:border-slate-300 shadow-sm transition-all">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-xs font-bold text-[#6a1b9a]">N12.2 Xếp hạng bảng & vòng loại trực tiếp</h3>
+                        <span class="text-[10px] text-gray-400 font-mono">P4.5</span>
+                    </div>
+                    <div class="mt-1 text-[11px] text-gray-700 leading-snug">
+                        <span class="font-bold text-[#0984e3]">Đầu vào:</span> Kết quả mỗi trận giải do máy chủ xác định (N08.2, N08.3, N10.2).
+                    </div>
+                    <div class="mt-1 text-[11px] text-gray-700 leading-snug">
+                        <span class="font-bold text-[#00b894]">Đầu ra:</span> Vòng bảng: thắng 3 điểm, thua 0 điểm (cách tính vòng tròn thường dùng ở các giải cờ, ví dụ Gomocup). Xếp hạng bảng theo: điểm bảng, đối đầu trực tiếp, tổng thời gian đã dùng ít hơn, bốc thăm. Nhất và nhì mỗi bảng vào bán kết (nhất A gặp nhì B, nhất B gặp nhì A), người thắng vào chung kết. Xác định Vô địch, Á quân và 2 hạng Bán kết.
+                    </div>
+                    <div class="mt-1 text-[10.5px] text-amber-700 bg-amber-50 p-1 rounded border border-amber-200 leading-tight">
+                        <strong>Quy tắc:</strong> Ván giải theo luật Đấu xếp hạng: 7 phút, chọn ngẫu nhiên quân, không có Hòa. Loại trực tiếp đấu 1 ván. Kết thúc giải thì chuyển sang N11.2 để cộng điểm.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cơ chế an toàn dữ liệu -->
+            <div class="mb-2 flex items-center text-gray-700 font-bold text-xs uppercase">
+                <span class="mr-1.5 text-slate-700 text-[10px]">▼</span> Toàn vẹn dữ liệu
+                <span class="ml-auto text-[10px] bg-gray-200 text-gray-700 px-1.5 py-0.5 rounded font-mono">BM</span>
+            </div>
+            <div class="border-l-2 border-slate-400 pl-2.5 ml-1 space-y-3">
+                <div class="bg-white p-2.5 rounded-lg border border-gray-200 shadow-sm">
+                    <h3 class="text-xs font-bold text-gray-800">Quy tắc máy chủ quyết định</h3>
+                    <p class="text-[11px] text-gray-600 mt-1 leading-snug">
+                        • Máy chủ không tin kết quả máy khách tự khai báo.<br>
+                        • Giới hạn tốc độ: trò chuyện 5 giây/tin, nước đi 2,5 giây/nước; vượt giới hạn máy chủ bỏ qua và báo lỗi.<br>
+                        • Mỗi nước cờ hợp lệ làm tăng <code class="text-blue-600 font-mono">phien_ban</code> bàn cờ.<br>
+                        • <code class="text-red-500 font-mono">ma_yeu_cau</code> lưu theo trận để từ chối yêu cầu gửi trùng/gửi trễ.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>
