@@ -1,0 +1,29 @@
+# Thư viện cài bằng npm (cài lại bằng: npm install)
+node_modules/
+
+# Thông tin bí mật, KHÔNG được đưa lên GitHub
+.env
+.env.*
+!.env.example
+
+# Tệp tạm và nhật ký
+*.log
+npm-debug.log*
+.DS_Store
+Thumbs.db
+~$*
+*.tmp
+
+# Cơ sở dữ liệu SQLite tạo ra khi chạy thử (chỉ giữ tệp .sql)
+*.db
+*.sqlite
+
+# Kết quả build, báo cáo kiểm thử
+dist/
+build/
+coverage/
+
+# Cấu hình riêng của trình soạn thảo
+.idea/
+.vscode/*
+!.vscode/extensions.json
